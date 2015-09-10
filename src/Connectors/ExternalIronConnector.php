@@ -1,5 +1,6 @@
 <?php namespace Kristianedlund\LaravelExternalQueue\Connectors;
 
+use Illuminate\Http\Request;
 use Illuminate\Queue\Connectors\ConnectorInterface;
 use Kristianedlund\LaravelExternalQueue\ExternalIronQueue;
 use Illuminate\Contracts\Encryption\Encrypter as EncrypterContract;
@@ -14,15 +15,24 @@ class ExternalIronConnector implements ConnectorInterface
      */
     protected $crypt;
 
+    /**
+     * The current request instance.
+     *
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
 
     /**
      * Create a new Iron connector instance.
      *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $crypt
+     * @param  \Illuminate\Contracts\Encryption\Encrypter  $crypt
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
      */
-    public function __construct(EncrypterContract $crypt)
+    public function __construct(EncrypterContract $crypt, Request $request)
     {
         $this->crypt = $crypt;
+        $this->request = $request;
     }
 
     /**
@@ -45,6 +55,6 @@ class ExternalIronConnector implements ConnectorInterface
             $iron->ssl_verifypeer = $config['ssl_verifypeer'];
         }
 
-        return new ExternalIronQueue($iron, $config['queue'], $config['encrypt']);
+        return new ExternalIronQueue($iron, $this->request, $config['queue'], $config['encrypt']);
     }
 }
