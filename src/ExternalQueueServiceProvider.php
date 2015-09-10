@@ -13,6 +13,7 @@ class ExternalQueueServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app->configure('externalqueue');
         $manager = $this->app['queue'];
         $manager->addConnector('externalsqs', function () {
             return new ExternalSqsConnector;
