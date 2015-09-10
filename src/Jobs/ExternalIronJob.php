@@ -28,7 +28,6 @@ class ExternalIronJob extends IronJob implements JobContract
     {
 
         $job = $this->getJobName();
-
         //Get the handler class name
         $classname = config('externalqueue.handlers.' . $job, '');
 
@@ -37,7 +36,6 @@ class ExternalIronJob extends IronJob implements JobContract
         ) {
             throw new \UnexpectedValueException('The handler class for ' . $job . ' was not found');
         }
-
         return new $classname;
     }
 
@@ -59,7 +57,6 @@ class ExternalIronJob extends IronJob implements JobContract
     protected function getJobName()
     {
         $rawdata = $this->decodePayload();
-
         return array_key_exists('job', $rawdata) ? $rawdata['job'] : 'default';
     }
 
