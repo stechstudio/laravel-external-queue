@@ -1,8 +1,5 @@
-<?php
+<?php namespace Kristianedlund\LaravelExternalQueue;
 
-namespace Kristianedlund\LaravelExternalQueue;
-
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\ServiceProvider;
 use Kristianedlund\LaravelExternalQueue\Connectors\ExternalIronConnector;
 use Kristianedlund\LaravelExternalQueue\Connectors\ExternalSqsConnector;
@@ -10,15 +7,28 @@ use Kristianedlund\LaravelExternalQueue\Connectors\ExternalSqsConnector;
 class ExternalQueueServiceProvider extends ServiceProvider
 {
 
-
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
     public function boot()
     {
+        // Lumen doesn't support publishin
+        if (substr($this->app->version(), 0, 5) != 'Lumen') {
+            $this->publishes([
+                __DIR__ . '/../config/externalqueue.php' => config_path('externalqueue.php')
+            ], 'config');
+        }
+
         $this->app->configure('externalqueue');
-        $manager = $this->app['queue'];
-        $manager->addConnector('externalsqs', function () {
+
+        $queueManager = $this->app['queue'];
+
+        $queueManager->addConnector('externalsqs', function () {
             return new ExternalSqsConnector;
         });
-        $manager->addConnector('externaliron', function () {
+        $queueManager->addConnector('externaliron', function () {
             return new ExternalIronConnector($this->app['encrypter'], $this->app['request']);
         });
 
