@@ -14,10 +14,13 @@ class ExternalIronJob extends IronJob implements JobContract
      */
     protected function resolveAndFire(array $payload)
     {
-        $handler = $this->resolveHandler();
+        $handlerClass = $this->resolveHandler();
+
+        $this->instance = $this->resolve($handlerClass);
+
         $data = $this->getJobData();
 
-        $handler->handle($this, $data);
+        $this->instance->handle($this, $data);
     }
 
     /**
@@ -36,7 +39,7 @@ class ExternalIronJob extends IronJob implements JobContract
         ) {
             throw new \UnexpectedValueException('The handler class for ' . $job . ' was not found');
         }
-        return new $classname;
+        return $classname;
     }
 
     /**
