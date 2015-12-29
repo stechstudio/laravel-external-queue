@@ -12,7 +12,7 @@
     "require": {
         "php": ">=5.4.0",
         "aws/aws-sdk-php": "~3.3",
-        "iron-io/iron_mq": "2.*",
+        "iron-io/iron_mq": "4.*",
         "illuminate/encryption": "5.1.*",
         "illuminate/queue": "5.1.*"
     },
