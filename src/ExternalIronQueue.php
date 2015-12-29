@@ -24,4 +24,16 @@ class ExternalIronQueue extends IronQueue implements QueueContract
             return new ExternalIronJob($this->container, $this, $job);
         }
     }
+
+    /**
+     * Delete a message from the Iron queue, with reservation ID.
+     *
+     * @param  string  $queue
+     * @param  string  $id
+     * @return void
+     */
+    public function deleteMessage($queue, $id, $reservation_id)
+    {
+        $this->iron->deleteMessage($queue, $id, $reservation_id);
+    }
 }

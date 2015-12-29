@@ -2,6 +2,7 @@
 
 use Illuminate\Contracts\Queue\Job as JobContract;
 use Illuminate\Queue\Jobs\IronJob;
+use Illuminate\Support\Arr;
 
 class ExternalIronJob extends IronJob implements JobContract
 {
@@ -70,5 +71,31 @@ class ExternalIronJob extends IronJob implements JobContract
     protected function decodePayload()
     {
         return json_decode($this->getRawBody(), true);
+    }
+
+    /**
+    * Our payloads typically will not have the queue name, we
+    * need to fallback to the IronQueue default
+    * @return String
+    */
+    public function getQueue()
+    {
+        return $this->iron->getQueue(parent::getQueue());
+    }
+
+    /**
+     * Delete the job from the queue.
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $this->deleted = true;
+
+        if (isset($this->job->pushed)) {
+            return;
+        }
+
+        $this->iron->deleteMessage($this->getQueue(), $this->job->id, $this->job->reservation_id);
     }
 }
