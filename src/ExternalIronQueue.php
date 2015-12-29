@@ -27,12 +27,14 @@ class ExternalIronQueue extends IronQueue implements QueueContract
 
     /**
      * Delete a message from the Iron queue, with reservation ID.
+     * Hopefully we can remove this method once Laravel updates the core IronQueue
+     * to the new v3 API.
      *
      * @param  string  $queue
      * @param  string  $id
      * @return void
      */
-    public function deleteMessage($queue, $id, $reservation_id)
+    public function deleteMessageWithReservation($queue, $id, $reservation_id)
     {
         $this->iron->deleteMessage($queue, $id, $reservation_id);
     }
